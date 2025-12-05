@@ -1,57 +1,116 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+"use client"
 
-export default function Home() {
+import Link from "next/link"
+import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs"
+import { Button } from "@/components/ui/button"
+
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="min-h-screen bg-[#FAF8F5] relative overflow-hidden">
+      {/* Noise texture overlay */}
+      <div className="fixed inset-0 bg-noise" />
+
+      {/* Gradient accent */}
+      <div
+        className="fixed top-0 right-0 w-[600px] h-[600px] opacity-20 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle at center, #C45D3A 0%, transparent 70%)",
+          filter: "blur(100px)",
+        }}
+      />
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 md:px-12 lg:px-16">
-        <Link href="/" className="text-xl font-bold tracking-tight">
+      <nav className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
+        <Link href="/" className="font-headline text-2xl tracking-tight text-[#1A1A1A]">
           Poof!
         </Link>
-        <Link href="/gallery">
-          <Button variant="ghost" className="text-sm font-medium">
-            Enter Gallery
-          </Button>
-        </Link>
+        <div className="flex items-center gap-4">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <Button variant="ghost" className="font-body text-sm">
+                Sign In
+              </Button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <Link href="/gallery">
+              <Button className="font-body text-sm bg-[#1A1A1A] hover:bg-[#333] text-[#FAF8F5]">
+                Go to Gallery
+              </Button>
+            </Link>
+          </SignedIn>
+        </div>
       </nav>
 
       {/* Hero Section */}
-      <main className="flex flex-1 flex-col items-center justify-center px-6 md:px-12 lg:px-16">
-        <div className="max-w-3xl text-center">
-          <h1 className="text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
-            See everything you own.
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] px-8 text-center">
+        <div className="max-w-4xl mx-auto">
+          {/* Headline with staggered animation */}
+          <h1
+            className="font-headline text-6xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tight text-[#1A1A1A] opacity-0 animate-fade-in-up"
+            style={{ animationDelay: "100ms", animationFillMode: "forwards" }}
+          >
+            See everything
             <br />
-            <span className="text-muted-foreground">Then let it go.</span>
+            you own.
           </h1>
 
-          <p className="mx-auto mt-8 max-w-xl font-serif text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Transform your belongings into a museum-quality visual inventory.
-            Upload photos, get AI-curated descriptions, and decide what stays.
+          <p
+            className="font-headline text-4xl md:text-5xl lg:text-6xl text-[#C45D3A] mt-4 opacity-0 animate-fade-in-up"
+            style={{ animationDelay: "300ms", animationFillMode: "forwards" }}
+          >
+            Then let it go.
           </p>
 
-          <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link href="/gallery">
-              <Button size="lg" className="h-12 px-8 text-base font-medium">
-                Start Your Catalog
-              </Button>
-            </Link>
-          </div>
+          <p
+            className="font-body text-lg md:text-xl text-[#8B8680] max-w-xl mx-auto mt-12 opacity-0 animate-fade-in-up"
+            style={{ animationDelay: "500ms", animationFillMode: "forwards" }}
+          >
+            Transform your phone photos into a museum-quality visual inventory.
+            AI generates professional shots and curatorial descriptions.
+            Make decisions. Declutter. Breathe.
+          </p>
 
-          <p className="mt-16 text-sm text-muted-foreground">
-            Inspired by Barbara Iweins&apos;s{" "}
-            <span className="italic">Katalog</span> — 10,532 objects,
-            photographed over two years.
-            <br />
-            We compress that into an afternoon.
+          <div
+            className="mt-12 opacity-0 animate-fade-in-up"
+            style={{ animationDelay: "700ms", animationFillMode: "forwards" }}
+          >
+            <SignedOut>
+              <SignUpButton mode="modal">
+                <Button
+                  size="lg"
+                  className="font-body text-base px-8 py-6 bg-[#1A1A1A] hover:bg-[#333] text-[#FAF8F5] rounded-full transition-all hover:scale-105"
+                >
+                  Start Your Inventory
+                </Button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <Link href="/gallery">
+                <Button
+                  size="lg"
+                  className="font-body text-base px-8 py-6 bg-[#1A1A1A] hover:bg-[#333] text-[#FAF8F5] rounded-full transition-all hover:scale-105"
+                >
+                  View Your Gallery
+                </Button>
+              </Link>
+            </SignedIn>
+          </div>
+        </div>
+
+        {/* Floating object count teaser */}
+        <div
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in"
+          style={{ animationDelay: "1000ms", animationFillMode: "forwards" }}
+        >
+          <p className="font-body text-sm text-[#8B8680] tracking-widest uppercase">
+            Average user owns 10,532 objects
           </p>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="px-6 py-8 text-center text-sm text-muted-foreground md:px-12 lg:px-16">
-        <p>A digital catalog of everything you own</p>
-      </footer>
+      {/* Decorative elements */}
+      <div className="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#FAF8F5] to-transparent pointer-events-none" />
     </div>
-  );
+  )
 }

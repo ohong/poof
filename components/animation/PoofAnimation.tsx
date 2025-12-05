@@ -1,98 +1,138 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useCallback, useRef, useState } from "react"
+import { motion, AnimatePresence } from "motion/react"
 
 interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  angle: number;
-  distance: number;
-  delay: number;
+  id: number
+  x: number
+  y: number
+  targetX: number
+  targetY: number
+  rotation: number
+  delay: number
+  size: number
 }
 
 interface PoofAnimationProps {
-  color: string;
-  isActive: boolean;
-  onComplete: () => void;
-  size?: number;
+  imageUrl: string
+  isAnimating: boolean
+  onComplete: () => void
+  width?: number
+  height?: number
 }
 
-function generateParticles(count: number): Particle[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 12 + 4,
-    angle: Math.random() * 360,
-    distance: Math.random() * 150 + 50,
-    delay: Math.random() * 0.1,
-  }));
+const GRID_SIZE = 5 // 5x5 = 25 particles
+const TOTAL_PARTICLES = GRID_SIZE * GRID_SIZE
+
+// Generate particles outside of render (pure function with seed)
+function generateParticles(width: number, height: number): Particle[] {
+  const newParticles: Particle[] = []
+  const particleWidth = width / GRID_SIZE
+  const particleHeight = height / GRID_SIZE
+
+  for (let row = 0; row < GRID_SIZE; row++) {
+    for (let col = 0; col < GRID_SIZE; col++) {
+      const id = row * GRID_SIZE + col
+
+      // Calculate random scatter direction and distance
+      const angle = Math.random() * Math.PI * 2
+      const distance = 150 + Math.random() * 200
+
+      newParticles.push({
+        id,
+        x: col * particleWidth,
+        y: row * particleHeight,
+        targetX: Math.cos(angle) * distance,
+        targetY: Math.sin(angle) * distance,
+        rotation: (Math.random() - 0.5) * 360,
+        delay: Math.random() * 0.1, // 0-100ms stagger
+        size: particleWidth,
+      })
+    }
+  }
+
+  return newParticles
 }
 
 export function PoofAnimation({
-  color,
-  isActive,
+  imageUrl,
+  isAnimating,
   onComplete,
-  size = 100,
+  width = 200,
+  height = 200,
 }: PoofAnimationProps) {
-  const [particles] = useState(() => generateParticles(25));
-  const [showParticles, setShowParticles] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([])
+  const completedCountRef = useRef(0)
+  const hasAnimatedRef = useRef(false)
 
+  // Generate particles when animation starts (effect is intentional for random values)
   useEffect(() => {
-    if (isActive) {
-      setShowParticles(true);
-      const timer = setTimeout(() => {
-        setShowParticles(false);
-        onComplete();
-      }, 800);
-      return () => clearTimeout(timer);
+    if (isAnimating && !hasAnimatedRef.current) {
+      hasAnimatedRef.current = true
+      completedCountRef.current = 0
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Animation requires setState on prop change with random values
+      setParticles(generateParticles(width, height))
+    } else if (!isAnimating) {
+      hasAnimatedRef.current = false
+      setParticles([])
     }
-  }, [isActive, onComplete]);
+  }, [isAnimating, width, height])
 
-  if (!isActive && !showParticles) return null;
+  // Track completion
+  const handleParticleComplete = useCallback(() => {
+    completedCountRef.current += 1
+    if (completedCountRef.current >= TOTAL_PARTICLES) {
+      // Small delay before callback to let the last particle finish visually
+      setTimeout(onComplete, 50)
+    }
+  }, [onComplete])
+
+  if (!isAnimating) {
+    return null
+  }
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 overflow-visible"
-      style={{ width: size, height: size }}
+      className="absolute inset-0 overflow-visible pointer-events-none z-50"
+      style={{ width, height }}
     >
       <AnimatePresence>
-        {showParticles &&
-          particles.map((particle) => {
-            const radians = (particle.angle * Math.PI) / 180;
-            const targetX = Math.cos(radians) * particle.distance;
-            const targetY = Math.sin(radians) * particle.distance;
-
-            return (
-              <motion.div
-                key={particle.id}
-                className="absolute rounded-sm"
-                style={{
-                  backgroundColor: color,
-                  width: particle.size,
-                  height: particle.size,
-                  left: `${particle.x}%`,
-                  top: `${particle.y}%`,
-                }}
-                initial={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                animate={{
-                  opacity: 0,
-                  scale: 0.5,
-                  x: targetX,
-                  y: targetY,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: particle.delay,
-                  ease: [0.32, 0, 0.67, 0],
-                }}
-              />
-            );
-          })}
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            initial={{
+              x: particle.x,
+              y: particle.y,
+              opacity: 1,
+              scale: 1,
+              rotate: 0,
+            }}
+            animate={{
+              x: particle.x + particle.targetX,
+              y: particle.y + particle.targetY,
+              opacity: 0,
+              scale: 0.3,
+              rotate: particle.rotation,
+            }}
+            transition={{
+              duration: 0.8,
+              delay: particle.delay,
+              ease: [0.25, 0.46, 0.45, 0.94], // Custom easing for natural feel
+            }}
+            onAnimationComplete={handleParticleComplete}
+            style={{
+              position: "absolute",
+              width: particle.size,
+              height: particle.size,
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: `${width}px ${height}px`,
+              backgroundPosition: `-${particle.x}px -${particle.y}px`,
+              borderRadius: "2px",
+            }}
+          />
+        ))}
       </AnimatePresence>
     </div>
-  );
+  )
 }

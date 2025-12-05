@@ -1,41 +1,45 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next"
+import { Playfair_Display, DM_Sans, Lora } from "next/font/google"
+import { ClerkProvider } from "@clerk/nextjs"
+import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-});
+  display: "swap",
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
-});
+  display: "swap",
+})
 
-const sourceSerif = Source_Serif_4({
-  variable: "--font-serif",
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
-  style: ["normal", "italic"],
-});
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Poof! — See Everything You Own",
-  description:
-    "Transform your belongings into a museum-quality visual inventory. Upload photos, get AI-curated descriptions, and decide what to keep.",
-};
+  description: "Transform your belongings into a museum-quality visual inventory. Then let them go.",
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  );
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${playfair.variable} ${dmSans.variable} ${lora.variable} font-sans antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
+  )
 }
