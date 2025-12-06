@@ -1,4 +1,3 @@
-```markdown
 # Poof!
 
 **See everything you own. Then let it go.**
@@ -11,7 +10,7 @@ Poof! transforms messy phone photos of your belongings into a museum-quality vis
 
 Everything we own owns a part of us. Many people feel the urge to live simpler—fewer possessions, less mental clutter. Marie Kondo's first step: see all your belongings in one place. But actually doing this? Impractical.
 
-Artist Barbara Iweins spent *two years* photographing all 10,532 objects in her house for her project [Katalog](https://katalog-barbaraiweins.com/). The result is stunning—a complete visual record of a life's accumulation. But who has two years and a professional photo setup?
+**The first step to owning less is seeing what you own.** Artist Barbara Iweins spent *two years* photographing all 10,532 objects in her house for her project [Katalog](https://katalog-barbaraiweins.com/). The result is stunning—a complete visual record of a life's accumulation. But who has two years and a professional photo setup?
 
 Until now, that barrier made the "see everything you own" dream impossible for regular people.
 
@@ -22,7 +21,7 @@ Poof! uses generative AI to compress Barbara Iweins' two-year project into an af
 **How it works:**
 
 1. Snap photos of your stuff with your phone
-2. Upload to Poof! (up to 10 at a time)
+2. Upload to Poof! (single or bulk upload)
 3. AI transforms each photo into a clean, professional product shot
 4. AI writes a curatorial description for each object
 5. Browse your belongings in a beautiful gallery view
@@ -62,11 +61,6 @@ This project was built with [Kiro](https://kiro.dev/), Amazon's agentic AI devel
 - **AI negotiation** — Let an agent handle buyer messages and schedule pickups
 - **Instant garage sale** — Spin up a custom storefront with payment integration
 
-## Inspiration
-
-[Katalog by Barbara Iweins](https://katalog-barbaraiweins.com/) — a two-year photographic inventory of 10,532 household objects. Poof! makes this possible for everyone.
-
 ---
 
-*Because the first step to owning less is seeing what you own.*
-```
+*Inspired by [Katalog by Barbara Iweins](https://katalog-barbaraiweins.com/) — a two-year photographic inventory of 10,532 household objects. Poof! makes this possible for everyone.*
