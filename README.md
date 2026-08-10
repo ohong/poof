@@ -10,7 +10,7 @@ Poof! transforms messy phone photos of your belongings into a museum-quality vis
 
 Everything we own owns a part of us. Many people feel the urge to live simpler—fewer possessions, less mental clutter. Marie Kondo's first step: see all your belongings in one place. But actually doing this? Impractical.
 
-Artist Barbara Iweins spent *two years* photographing all 10,532 objects in her house for her project [Katalog](https://katalog-barbaraiweins.com/). The result is stunning—a complete visual record of a life's accumulation. But who has two years and a professional photo setup?
+The first step to owning less is seeing what you own. Artist Barbara Iweins spent two years photographing all 10,532 objects in her house for her project Katalog. The result is stunning—a complete visual record of a life's accumulation. But who has two years and a professional photo booth at home?
 
 Until now, that barrier made the "see everything you own" dream impossible for regular people.
 
@@ -61,10 +61,5 @@ This project was built with [Kiro](https://kiro.dev/), Amazon's agentic AI devel
 - **AI negotiation** — Let an agent handle buyer messages and schedule pickups
 - **Instant garage sale** — Spin up a custom storefront with payment integration
 
-## Inspiration
-
-[Katalog by Barbara Iweins](https://katalog-barbaraiweins.com/) — a two-year photographic inventory of 10,532 household objects. Poof! makes this experiment possible for everyone.
-
 ---
-
-*Because the first step to owning less is seeing what you own.*
+Inspiration: [Katalog by Barbara Iweins](https://katalog-barbaraiweins.com/) — a two-year photographic inventory of 10,532 household objects. Poof! makes this experiment possible for everyone.
