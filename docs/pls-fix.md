@@ -1,0 +1,53 @@
+# Poof rebuild
+
+## Creator decisions — October 12–13, 2026
+
+- Rebuild freely; there are no existing users or data to migrate.
+- Free access. Mobile browsers are a primary use case.
+- Private visual inventory, cleaned-up images, and editable object descriptions.
+- Editable sale drafts, suggested price ranges, and copy/share. No marketplace posting in this release.
+- Sell, Donate, and Toss record a decision immediately and move items into Archive. Allow undo.
+- Choose practical operating constraints. Work stays in this chat, without delegated agents.
+
+## Approach and integrated state
+
+Repair would retain Clerk and Supabase, with two identity systems, public media, and request-bound processing to repair. The chosen rebuild retains Next.js and uses Supabase Auth, Postgres, private Storage, and Vercel Workflow. Native accounts remove the second identity boundary. Hosted email delivery requires SMTP setup. Direct BFL and Anthropic calls suffice; there are no runtime agents.
+
+The integrated release is on `codex/poof-rebuild`, in `/Users/ohong/.codex/worktrees/poof-rebuild/poof`. A production server runs at `http://localhost:3101`; `/demo` is an explicitly labeled sample. The original checkout, creator README edits, and `temp/BRANCH_COMPARISON.md` remain untouched. The starting commit is `b5e5da4`. No Git push or cloud deployment has occurred.
+
+Source evidence: the SHA-256 digest of `poof-source-manifest.sha256` is `e2ef9f3a519a38af09d76f422ea9780fda0f6693eb045046fbd81479b1935bec`. Its 73 entries cover runtime source, scripts, migrations, configuration, dependencies, and shipped assets. Documentation and historical Kiro notes are excluded. Evidence is saved under `/Users/ohong/.codex/visualizations/2026/10/13/01a133ee-42a3-7470-bd58-7879e9b01af6`.
+
+## Acceptance and evidence
+
+| Observable outcome | Evidence and result |
+| --- | --- |
+| A new user can create an account, sign in, and sign out. | Passed through the browser with real local email codes. Signed-out `/gallery` redirects to sign-in. The local inbox does not deliver external email. |
+| Phone photos become saved objects without duplicate allocation. | PNG and HEIC browser uploads completed. Invalid JPEG input showed a per-file error while the valid photo survived. Reloading during processing recovered the saved job. Public API allocation and duplicate processing checks passed. |
+| Originals remain available, and catalog images preserve visible identity and damage. | Real BFL and Anthropic calls completed through the production API and durable workflow. The mug's blue glaze, handle, brown rim, and chip remained visible. A separate public HEIC backpack fixture also completed. This limited sample does not establish universal AI fidelity. |
+| Details, sale drafts, and prices are editable and shareable. | Real edits persisted. The draft identifies the visible chip and labels prices as unverified AI estimates. Browser copy preserved a decimal asking price of 9.50. Native external share destinations were not exercised. |
+| Decisions persist and Archive allows undo. | Real Sell, Archive reload, and return-to-collection passed. Final browser checks confirmed immediate counters and demo undo. |
+| Accounts cannot access each other's private records or image bytes. | Two-account API, row-policy, and Storage checks passed. Anonymous image access, browser mutation bypass, user-selected quotas, and cross-origin mutations were rejected. |
+| Recovery and permanent removal work. | Atomic quota reservation, daily limits, object removal, account removal, and session invalidation passed. Removal during a real AI submission cancelled the durable run and left no stored media. Maintenance retained referenced photos, removed expired orphans, and recovered an interrupted start; elapsed time and interrupted state were simulated. |
+| Keyboard use and narrow layouts work. | Final production browser checks passed for arrow-key tabs, Escape, focus return to the object, and focus return to search after archiving. A 480 CSS-pixel layout had no horizontal overflow. Physical phones, Safari, and native camera capture remain untested. |
+| Setup and build are reproducible. | Fresh `npm ci --ignore-scripts`, lint, typecheck, and production build passed. All four migrations applied after a fresh local database reset. Supabase local advisors reported no issues. |
+| The inventory remains usable at its configured limit. | Real auth/API checks with 1,000 maximum-length metadata records passed. A conservative signed-URL model produced a 2,598,926-byte list response. Media and 1,000 AI jobs were not seeded; this is a payload check, not a concurrency benchmark. |
+
+The final API suite and browser focus checks ran after the last UI change. The real-provider suite used the same final backend; only focus restoration changed afterward. Build and real-provider logs, source manifest, model result, transformed photo, and desktop/narrow screenshots accompany this handoff. All disposable local accounts were removed.
+
+## Corrected assumptions
+
+The original npm lock could not install cleanly; the rebuild uses one authoritative npm lock. The configured hosted Supabase address did not resolve, and Poof was absent from the connected account. A successful old build did not prove a working user journey.
+
+Earlier description output missed damage or invented provenance. The final flow analyzes the original, uses structured output, and constructs the listing from editable observations. It preserves the source photo and avoids claims about unseen tests, authenticity, age, or sold comparables.
+
+Paid submissions are not automatically repeated after uncertain responses. Atomic limits cap uploads and processing; retries retain user edits. Deletion blocks new work, cancels runs, removes media, then removes records. A late image save cleans up when deletion wins. Stale terminal runs and interrupted starts become available for manual retry.
+
+## Review, limits, and release authority
+
+Review and verification were performed by the implementing agent, as requested. There was no independent agent review.
+
+The runtime dependency audit reports zero findings. The full audit reports five entries propagated from one unpatched braces advisory in development lint dependencies. Details and the upstream source are in `docs/release.md`. Model quality and user demand need broader real-user evaluation.
+
+Local engineering verification is complete. Public launch remains unverified and unperformed. The connected accounts expose Supabase **Side Projects** and Vercel **Pacific Systems** (`ohong-projects`), but no resource target is approved. Other projects were not modified. The dedicated local Docker stack is `poof-rebuild`, on ports 56321–56329.
+
+Next action: obtain the pending organization choice, repeat its current cost quote, and obtain the required cost confirmation before creating a dedicated Supabase project. Resolve SMTP sender/domain/credentials, then stage the release in the confirmed hosting target. Follow `docs/release.md` for migration, secrets, email templates, staged acceptance, production verification, maintenance, and rollback. Never reset a hosted database as installation.

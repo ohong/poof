@@ -1,45 +1,37 @@
-import type { Metadata } from "next"
-import { Playfair_Display, DM_Sans, Lora } from "next/font/google"
-import { ClerkProvider } from "@clerk/nextjs"
-import "./globals.css"
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+import type { Metadata } from "next";
+import { DM_Sans, Instrument_Serif } from "next/font/google";
+import "./globals.css";
+const sans = DM_Sans({
   subsets: ["latin"],
+  variable: "--font-sans",
   display: "swap",
-})
-
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+});
+const serif = Instrument_Serif({
   subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
-})
-
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-  display: "swap",
-})
-
+});
 export const metadata: Metadata = {
-  title: "Poof! — See Everything You Own",
-  description: "Transform your belongings into a museum-quality visual inventory. Then let them go.",
-}
-
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  ),
+  title: {
+    default: "Poof! — A little less, a little lighter.",
+    template: "%s · Poof!",
+  },
+  description:
+    "See what you own. Turn photos into a private collection, make a plan, and let things go. Free to use.",
+};
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${playfair.variable} ${dmSans.variable} ${lora.variable} font-sans antialiased`}
-        >
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
-  )
+    <html lang="en" data-scroll-behavior="smooth">
+      <body className={`${sans.variable} ${serif.variable}`}>{children}</body>
+    </html>
+  );
 }

@@ -1,25 +1,13 @@
-import type { NextConfig } from "next";
-
+import type { NextConfig } from 'next';
+import { withWorkflow } from 'workflow/next';
 const nextConfig: NextConfig = {
-  // Allow large file uploads (10 files × 15MB = 150MB max)
-  experimental: {
-    proxyClientMaxBodySize: '150mb',
-    serverActions: {
-      bodySizeLimit: '150mb',
-    },
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.supabase.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'zoyrfqgjvenzvtgrplth.supabase.co',
-      },
-    ],
+  async headers() {
+    return [{source:'/:path*',headers:[
+      {key:'X-Content-Type-Options',value:'nosniff'},
+      {key:'Referrer-Policy',value:'strict-origin-when-cross-origin'},
+      {key:'X-Frame-Options',value:'DENY'},
+      {key:'Permissions-Policy',value:'camera=(self), microphone=(), geolocation=()'},
+    ]}];
   },
 };
-
-export default nextConfig;
+export default withWorkflow(nextConfig);

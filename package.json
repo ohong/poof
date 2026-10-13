@@ -6,23 +6,30 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run lint && npm run typecheck && npm run build",
+    "db:start": "supabase start --exclude studio,realtime,edge-runtime,logflare,vector,postgres-meta",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset --local --no-seed",
+    "dev:setup": "node scripts/local-env.mjs",
+    "verify:api": "node scripts/verify-api.mjs",
+    "verify:ai": "node scripts/verify-api.mjs --live-ai",
+    "verify:maintenance": "node scripts/verify-maintenance.mjs",
+    "verify:scaling": "node scripts/verify-scaling.mjs"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.36.0",
-    "@radix-ui/react-dialog": "^1.1.15",
-    "@radix-ui/react-slot": "^1.2.4",
-    "@supabase/ssr": "^0.8.0",
-    "@supabase/supabase-js": "^2.86.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.556.0",
-    "motion": "^12.23.25",
-    "next": "16.0.7",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "react-dropzone": "^14.3.8",
-    "tailwind-merge": "^3.4.0"
+    "@radix-ui/react-dialog": "1.1.15",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.3",
+    "heic2any": "0.0.4",
+    "lucide-react": "0.556.0",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sharp": "0.35.5",
+    "workflow": "5.2.1",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -30,9 +37,16 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.0.7",
+    "eslint-config-next": "16.4.0",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.4.0",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=22.0.0 <27"
+  },
+  "overrides": {
+    "devalue": "5.9.4",
+    "nanoid@5.1.6": "5.1.16"
   }
 }

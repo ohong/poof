@@ -1,116 +1,135 @@
-"use client"
-
-import Link from "next/link"
-import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs"
-import { Button } from "@/components/ui/button"
-
-export default function LandingPage() {
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { Brand } from "@/components/brand";
+import { PhotoComparison } from "@/components/photo-comparison";
+import { sampleItems } from "@/lib/sample";
+import { ItemImage } from "@/components/item-image";
+export default function Page() {
   return (
-    <div className="min-h-screen bg-[#FAF8F5] relative overflow-hidden">
-      {/* Noise texture overlay */}
-      <div className="fixed inset-0 bg-noise" />
-
-      {/* Gradient accent */}
-      <div
-        className="fixed top-0 right-0 w-[600px] h-[600px] opacity-20 pointer-events-none"
-        style={{
-          background: "radial-gradient(circle at center, #C45D3A 0%, transparent 70%)",
-          filter: "blur(100px)",
-        }}
-      />
-
-      {/* Navigation */}
-      <nav className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
-        <Link href="/" className="font-headline text-2xl tracking-tight text-[#1A1A1A]">
-          Poof!
-        </Link>
-        <div className="flex items-center gap-4">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <Button variant="ghost" className="font-body text-sm">
-                Sign In
-              </Button>
-            </SignInButton>
-          </SignedOut>
-          <SignedIn>
-            <Link href="/gallery">
-              <Button className="font-body text-sm bg-[#1A1A1A] hover:bg-[#333] text-[#FAF8F5]">
-                Go to Gallery
-              </Button>
-            </Link>
-          </SignedIn>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] px-8 text-center">
-        <div className="max-w-4xl mx-auto">
-          {/* Headline with staggered animation */}
-          <h1
-            className="font-headline text-6xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tight text-[#1A1A1A] opacity-0 animate-fade-in-up"
-            style={{ animationDelay: "100ms", animationFillMode: "forwards" }}
-          >
-            See everything
-            <br />
-            you own.
-          </h1>
-
-          <p
-            className="font-headline text-4xl md:text-5xl lg:text-6xl text-[#C45D3A] mt-4 opacity-0 animate-fade-in-up"
-            style={{ animationDelay: "300ms", animationFillMode: "forwards" }}
-          >
-            Then let it go.
-          </p>
-
-          <p
-            className="font-body text-lg md:text-xl text-[#8B8680] max-w-xl mx-auto mt-12 opacity-0 animate-fade-in-up"
-            style={{ animationDelay: "500ms", animationFillMode: "forwards" }}
-          >
-            Transform your phone photos into a museum-quality visual inventory.
-            AI generates professional shots and curatorial descriptions.
-            Make decisions. Declutter. Breathe.
-          </p>
-
-          <div
-            className="mt-12 opacity-0 animate-fade-in-up"
-            style={{ animationDelay: "700ms", animationFillMode: "forwards" }}
-          >
-            <SignedOut>
-              <SignUpButton mode="modal">
-                <Button
-                  size="lg"
-                  className="font-body text-base px-8 py-6 bg-[#1A1A1A] hover:bg-[#333] text-[#FAF8F5] rounded-full transition-all hover:scale-105"
-                >
-                  Start Your Inventory
-                </Button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <Link href="/gallery">
-                <Button
-                  size="lg"
-                  className="font-body text-base px-8 py-6 bg-[#1A1A1A] hover:bg-[#333] text-[#FAF8F5] rounded-full transition-all hover:scale-105"
-                >
-                  View Your Gallery
-                </Button>
+    <div className="landing">
+      <header className="site-header">
+        <Brand />
+        <nav>
+          <Link href="/demo">Explore a collection</Link>
+          <Link className="button outline compact" href="/sign-in">
+            Sign in
+            <ArrowUpRight size={15} />
+          </Link>
+        </nav>
+      </header>
+      <main>
+        <section className="landing-hero">
+          <div className="hero-copy">
+            <div className="eyebrow">LESS STUFF. MORE SPACE.</div>
+            <h1>
+              See everything
+              <br />
+              you own.
+              <br />
+              <em>Then let it go.</em>
+            </h1>
+            <p>
+              Turn a few phone photos into a beautiful collection of your
+              belongings. Keep what matters. Give the rest a next chapter.
+            </p>
+            <div className="hero-actions">
+              <Link href="/sign-in" className="button primary">
+                Start your collection
+                <ArrowRight size={18} />
               </Link>
-            </SignedIn>
+              <span>Free. Private. A little lighter.</span>
+            </div>
+            <Link className="hero-demo" href="/demo">
+              Take a look around first
+              <ArrowUpRight size={15} />
+            </Link>
           </div>
-        </div>
-
-        {/* Floating object count teaser */}
-        <div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in"
-          style={{ animationDelay: "1000ms", animationFillMode: "forwards" }}
-        >
-          <p className="font-body text-sm text-[#8B8680] tracking-widest uppercase">
-            Average user owns 10,532 objects
-          </p>
-        </div>
+          <Link
+            href="/demo"
+            className="hero-collection"
+            aria-label="Explore the sample collection"
+          >
+            <div className="hero-gallery">
+              {sampleItems.map((item) => (
+                <div key={item.id}>
+                  <ItemImage item={item} />
+                </div>
+              ))}
+            </div>
+            <div className="hero-collection-caption">
+              <span>THE EVERYDAY COLLECTION</span>
+              <span>
+                009 OBJECTS <ArrowUpRight size={15} />
+              </span>
+            </div>
+          </Link>
+        </section>
+        <section className="landing-process">
+          <div>
+            <span>01 / SEE IT</span>
+            <h2>A photo. A fresh perspective.</h2>
+            <p>
+              Snap one object at a time. We clean up the background and give
+              each belonging a place in your private collection.
+            </p>
+          </div>
+          <div>
+            <span>02 / CHOOSE IT</span>
+            <h2>Keep the things that matter.</h2>
+            <p>
+              See your belongings together. Keep, sell, donate, or toss. Change
+              your mind whenever you need to.
+            </p>
+          </div>
+          <div>
+            <span>03 / RELEASE IT</span>
+            <h2>A little help with the next step.</h2>
+            <p>
+              Get an editable sale draft and a suggested price range. Copy,
+              share, and give something a new home.
+            </p>
+          </div>
+        </section>
+        <section className="landing-transformation">
+          <PhotoComparison />
+          <div>
+            <div className="eyebrow">A NEW BACKGROUND. THE SAME BELONGING.</div>
+            <h2>
+              Even the little
+              <br />
+              imperfections
+              <br />
+              <em>have a story.</em>
+            </h2>
+            <p>
+              The mug you reach for every morning. The chip on its rim. A
+              collection of your things should still look like your things.
+            </p>
+            <p>
+              Poof keeps your original photo alongside the catalog image. Check
+              both, edit the details, and make the decision yourself.
+            </p>
+            <Link className="text-button" href="/sign-in">
+              Start with one object
+              <ArrowRight size={17} />
+            </Link>
+          </div>
+        </section>
+        <section className="landing-close">
+          <span className="eyebrow">YOU DON’T HAVE TO DO IT ALL TODAY.</span>
+          <h2>One thing is a start.</h2>
+          <Link href="/sign-in" className="button primary">
+            Make a little space
+            <ArrowRight size={18} />
+          </Link>
+          <p>Free to use. No marketplace accounts needed.</p>
+        </section>
       </main>
-
-      {/* Decorative elements */}
-      <div className="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#FAF8F5] to-transparent pointer-events-none" />
+      <footer className="site-footer">
+        <Brand />
+        <p>Inspired by the art of seeing what we own.</p>
+        <Link href="/privacy">Privacy & data</Link>
+      </footer>
     </div>
-  )
+  );
 }

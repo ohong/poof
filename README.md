@@ -2,69 +2,71 @@
 
 **See everything you own. Then let it go.**
 
-Poof! transforms messy phone photos of your belongings into a museum-quality visual inventory, making it effortless to decide what to keep, sell, donate, or toss.
+Poof turns phone photos into a private visual collection. See your belongings together, decide what to keep, and give the rest a next chapter.
 
----
+The first step to owning less is seeing what you own.
 
-## The Problem
+The first release is free to use and works in desktop and mobile browsers:
 
-Everything we own owns a part of us. Many people feel the urge to live simpler—fewer possessions, less mental clutter. Marie Kondo's first step: see all your belongings in one place. But actually doing this? Impractical.
+- Add up to ten JPEG, PNG, WebP, or HEIC photos at once.
+- Get a clean catalog image, a short description, and an editable sale draft.
+- Review a labeled AI price range, set an asking price, and copy or share the draft.
+- Keep, Sell, Donate, or Toss. Archive records the decision immediately; you can undo it.
+- Edit details, download photos, export the collection, or permanently remove your data.
 
-Artist Barbara Iweins spent *two years* photographing all 10,532 objects in her house for her project [Katalog](https://katalog-barbaraiweins.com/). The result is stunning—a complete visual record of a life's accumulation. But who has two years and a professional photo setup?
+Listings are drafts. Poof does not post to marketplaces or complete sales. Compare catalog images with originals and review descriptions before posting. Price estimates do not use live sold-listing data.
 
-Until now, that barrier made the "see everything you own" dream impossible for regular people.
+## Run locally
 
-## The Solution
+Prerequisites: Node.js 22–26, npm, Docker, and Supabase CLI 2.118 or later. Local Supabase uses a dedicated `poof-rebuild` stack on ports 56321–56329. Other projects are not stopped or reset.
 
-Poof! uses generative AI to compress Barbara Iweins' two-year project into an afternoon.
+1. Run `npm ci`.
+2. Run `npm run db:start`.
+3. Run `npm run dev:setup` to create ignored local configuration.
+4. Add `BFL_API_KEY` and `ANTHROPIC_API_KEY` to `.env.local`.
+5. Run `npm run dev`.
+6. Open [Poof locally](http://localhost:3000).
 
-**How it works:**
+Sign-in codes appear in the [local email inbox](http://127.0.0.1:56324). This inbox does not deliver to real email addresses. Both confirmation and magic-link templates use the supplied code template.
 
-1. Snap photos of your stuff with your phone
-2. Upload to Poof! (single or bulk upload)
-3. AI transforms each photo into a clean, professional product shot
-4. AI writes a curatorial description for each object
-5. Browse your belongings in a beautiful gallery view
-6. Decide: Keep, Sell, Donate, or Toss
-7. Watch items disappear with a satisfying "Poof!" animation
+The public `/demo` route contains illustrative sample objects. Changes there stay in the tab. It never substitutes for the real inventory.
 
-What remains is clarity. A visual inventory of what you've chosen to keep—and a record of what you've let go.
+## Verify
 
-## Who It's For
+With the local stack and app running:
 
-- **Aspiring minimalists** who want to see everything they own but never had the means
-- **People doing a "life reset"** or spring cleaning who need activation energy
-- **Anyone inspired by Marie Kondo** who wants to go deeper than tidying drawers
-- **The anti-overconsumption crowd** seeking a more grounded relationship with their stuff
+```sh
+npm run verify
+POOF_BASE_URL=http://localhost:3000 npm run verify:api
+POOF_BASE_URL=http://localhost:3000 npm run verify:ai
+POOF_BASE_URL=http://localhost:3000 node scripts/verify-maintenance.mjs
+POOF_BASE_URL=http://localhost:3000 node scripts/verify-scaling.mjs
+```
 
-## Tech Stack
+The API scripts refuse hosted projects. They create and remove disposable local accounts. `verify:ai` makes real paid BFL and Anthropic calls. Maintenance QA simulates elapsed time but uses real Storage operations. Scaling QA seeds 1,000 metadata records; it does not claim 1,000 real AI uploads.
 
-| Layer | Technology |
-|-------|------------|
-| Framework | Next.js 14, TypeScript |
-| Styling | TailwindCSS, Shadcn UI |
-| Animation | Motion |
-| Auth | Clerk |
-| Database & Storage | Supabase |
-| Hosting & Deployment | Vercel |
-| Image Transformation | FLUX.2 Image Editing |
-| Object Descriptions | Claude 4.5 Sonnet |
+## How it works
 
-## Powered by Kiro
+```text
+phone photo → browser preparation → private Storage → saved object
+                                                    ↓
+                                            durable workflow
+                                            /              \
+                                     original → Claude   original → FLUX
+                                            \              /
+                                             private collection
+                                                    ↓
+                                         editable draft / decision
+                                                    ↓
+                                            reversible Archive
+```
 
-This project was built with [Kiro](https://kiro.dev/), Amazon's agentic AI development environment. Kiro accelerated our build from concept to working product, enabling rapid prototyping across the full stack—from UI components to API integrations to the end-to-end AI pipeline.
+Next.js 16.4 handles the app and API. Supabase provides email-code accounts, Postgres, and private Storage. Vercel Workflow persists processing across interruptions. FLUX.2 Klein 9B edits images; Claude Haiku 5.5 describes the original and suggests a price range. The app builds the sale draft from those observations. Runtime calls use ordinary workflows, not autonomous agents.
 
-## Future Roadmap
+Native Supabase accounts avoid a separate Clerk identity system. Hosted email delivery needs SMTP setup. See [release and operations](docs/release.md), [product specification](docs/specs.md), and [rebuild handoff](docs/pls-fix.md).
 
-- **Semantic search** — Find objects by color, category, or natural language ("kitchen tools", "things I haven't used in a year")
-- **One-click listing** — Post to FB Marketplace, Craigslist, or Karrot with AI-generated descriptions and suggested prices
-- **AI negotiation** — Let an agent handle buyer messages and schedule pickups
-- **Instant garage sale** — Spin up a custom storefront with payment integration
+## Inspiration and history
 
-## Inspiration
+Artist Barbara Iweins' [Katalog](https://katalog-barbaraiweins.com/) makes everyday possessions visible as a collection. Poof brings that idea to ordinary phone photos and practical decisions.
 
-[Katalog by Barbara Iweins](https://katalog-barbaraiweins.com/) — a two-year photographic inventory of 10,532 household objects. Poof! makes this experiment possible for everyone.
-
----
-
-*Because the first step to owning less is seeing what you own.*
+The original prototype was built with [Kiro](https://kiro.dev/). Its history and creator notes remain in Git. The current rebuild replaces that prototype with private storage, durable processing, reversible decisions, and complete sale-draft journeys.
