@@ -283,7 +283,7 @@ export function Collection({
     <>
       <section className="collection-heading">
         <div>
-          <h1>{showArchive ? "Archive." : "Your collection."}</h1>
+          <h1>{showArchive ? "Archive" : "Your collection"}</h1>
           {showArchive && (
             <p>A record of your decisions. Bring anything back, anytime.</p>
           )}
@@ -384,8 +384,8 @@ export function Collection({
       <div className="collection-meta">
         <span>
           {loading
-            ? "OPENING YOUR COLLECTION"
-            : `${demo ? visible.length : total} ${demo ? (visible.length === 1 ? "OBJECT" : "OBJECTS") : total === 1 ? "OBJECT" : "OBJECTS"}${search ? " FOUND" : ""}`}
+            ? "Opening your collection"
+            : `${demo ? visible.length : total} ${demo ? (visible.length === 1 ? "object" : "objects") : total === 1 ? "object" : "objects"}${search ? " found" : ""}`}
         </span>
         {demo && (
           <span>
@@ -416,17 +416,17 @@ export function Collection({
         <section className="empty-state">
           <h2>
             {search || category || disposition
-              ? "No objects found."
+              ? "No objects found"
               : showArchive
-                ? "Every decision starts\nwith a little space."
-                : "Start with what’s\nin front of you."}
+                ? "No archived objects"
+                : "No objects yet"}
           </h2>
           <p>
             {search || category || disposition
               ? "Try another search or clear your filters."
               : showArchive
                 ? "Choose Sell, Donate, or Toss from your collection. Your objects will be here, and you can bring them back."
-                : "A mug. A favorite sweater. That thing in the drawer. Take a photo and begin your collection."}
+                : "Add a photo to start your collection."}
           </p>
           {search || category || disposition ? (
             <button

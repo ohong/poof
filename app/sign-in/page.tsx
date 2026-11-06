@@ -4,7 +4,6 @@ import { configured } from "@/lib/config";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { ArrowUpRight } from "lucide-react";
 export default async function SignIn() {
   if (configured()) {
     const db = await createClient();
@@ -18,7 +17,7 @@ export default async function SignIn() {
       <header className="site-header">
         <Brand />
         <Link className="text-button" href="/demo">
-          Explore a sample collection <ArrowUpRight size={16} />
+          Explore a sample collection
         </Link>
       </header>
       <main className="auth-layout" id="main-content" tabIndex={-1}>

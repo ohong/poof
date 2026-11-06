@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, Grid2X2, Archive, UserRound, ArrowUpRight } from "lucide-react";
+import { Plus, Grid2X2, Archive, UserRound } from "lucide-react";
 import { Brand } from "./brand";
 import { previewMode } from "@/lib/experience";
 export function Shell({
@@ -51,7 +51,6 @@ export function Shell({
               className="button outline compact"
             >
               {previewMode ? "About Poof" : "Make it yours"}
-              <ArrowUpRight size={16} />
             </Link>
           ) : (
             <>
@@ -75,7 +74,7 @@ export function Shell({
         {children}
       </main>
       <footer className="app-footer">
-        <span>Less stuff. More space.</span>
+
         <Link href="/privacy">Privacy & data</Link>
       </footer>
       {!demo && (

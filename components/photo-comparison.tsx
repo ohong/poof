@@ -18,7 +18,6 @@ export function PhotoComparison() {
               : "The same chipped blue mug after Poof cleans up the background"
           }
         />
-        <span>{original ? "THE PHOTO" : "THE CATALOG"}</span>
       </div>
       <div className="comparison-controls">
         <button aria-pressed={original} onClick={() => setOriginal(true)}>

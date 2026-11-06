@@ -1,17 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { InputModality } from "@/components/input-modality";
 const sans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap",
-});
-const serif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-serif",
   display: "swap",
 });
 export const metadata: Metadata = {
@@ -22,14 +15,14 @@ export const metadata: Metadata = {
         : "http://localhost:3000"),
   ),
   title: {
-    default: "Poof! — A little less, a little lighter.",
+    default: "Poof | Sort your belongings",
     template: "%s · Poof!",
   },
   description:
     "See what you own. Turn photos into a private collection, make a plan, and let things go. Free to use.",
 };
 export const viewport: Viewport = {
-  themeColor: "#f7f5ef",
+  themeColor: "#f5f6f4",
   viewportFit: "cover",
 };
 export default function RootLayout({
@@ -39,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${sans.variable} ${serif.variable}`}>
+      <body className={sans.variable}>
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>

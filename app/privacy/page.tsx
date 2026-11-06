@@ -1,19 +1,17 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
 import { previewMode } from "@/lib/experience";
-import { ArrowUpRight } from "lucide-react";
 export default function Privacy() {
   return (
     <div className="policy-page">
       <header className="site-header">
         <Brand />
         <Link className="text-button" href={previewMode ? "/demo" : "/gallery"}>
-          {previewMode ? "Explore the preview" : "Your collection"}{" "}
-          <ArrowUpRight size={16} />
+          {previewMode ? "Explore the preview" : "Your collection"}
         </Link>
       </header>
       <main id="main-content" tabIndex={-1}>
-        <h1>Privacy & data.</h1>
+        <h1>Privacy & data</h1>
         {previewMode && (
           <p className="notice">
             This release is a product preview. It does not accept account
