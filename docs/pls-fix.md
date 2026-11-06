@@ -10,7 +10,11 @@ The release retains free access, mobile-browser support, editable sale drafts, l
 
 The original rebuild is commit `2e59c61`, based on `b5e5da4`. The November design pass is on `codex/poof-rebuild` in `/Users/ohong/.codex/worktrees/poof-polish/poof`. The original checkout's creator README changes and `temp/` are preserved. The removed October worktree is not the current source.
 
-Deployment is pending at this checkpoint. The intended target is a dedicated Git-linked Poof project in Vercel team **Pacific Systems** (`ohong-projects`). The release commit, deployed URL, and hosted checks will be recorded after deployment. No existing project is reused.
+The [public preview is live](https://poof-phi.vercel.app) in the dedicated Git-linked **poof** project in Vercel team **Pacific Systems** (`ohong-projects`). App source commit `fd91cf81bb18d5319d68c140730bb979ad545508` deployed successfully as `dpl_MbQqsmDzkZXuaDFjtFhApMZqC84B`, targeting production. Later documentation commits retain that runtime source. Pushes to `main` deploy automatically. No existing project was reused.
+
+The project has no configured environment variables, confirmed through the scoped Vercel CLI. The connector's environment-list call returned a permission error; the supported CLI fallback succeeded. The public production domain works without login. Vercel's generated deployment aliases retain the team's protection. Hosted account and model services are deliberately absent.
+
+The functional source manifest covers 84 files; its SHA-256 digest is `8b36a97915e71f5f941195f73b1ff752fc9d383ec1fab936ff561285f9b5ff8d`. Documentation and historical notes are excluded. The exact final deployment record is saved with the evidence artifacts.
 
 ## Design and behavior
 
@@ -24,6 +28,7 @@ Unsaved edits require an explicit discard. Decisions save edits atomically. Rapi
 | --- | --- |
 | Source installs and builds reproducibly. | Fresh `npm ci --ignore-scripts` passed. Final `npm run verify` passed lint, TypeScript, and production build without backend environment variables. |
 | Preview routes state their actual capabilities. | Landing, demo, sign-in, and privacy return 200. Unknown routes return 404. Account API returns 503 while services are absent; sign-in has no enabled email form. |
+| The deployed preview works publicly. | The production domain passed unauthenticated HTTP checks for those routes. In the live browser, edits, US$9.50 copy, Archive/return, retained notes, filters, empty-state recovery, keyboard focus, and a 390-pixel phone layout passed. No broken images or console warnings/errors were observed. |
 | Phone, tablet, and desktop layouts remain readable. | Production-browser checks passed at 320, 390, 768, and 1280 CSS pixels. No horizontal overflow. Long names/descriptions remain within the dialog. Supporting gallery text is at least 14 pixels; controls have 44-pixel minimum targets. Physical phones and Safari remain untested. |
 | Keyboard and motion preferences work. | Enter opens without animation; Escape returns focus to the opener. Tabs, discard recovery, save/copy focus, Archive/Undo, and empty states passed. Aside direct browser control verified reduced-motion media preference: no dialog/overlay animation and immediate decisions. |
 | Drafts and decisions preserve edits. | Whitespace names show a focused validation error. Save trims names and retains content. Copy produces US$9.50. Currency changes clear stale estimates. Sell saves dirty notes and Archive permits undo, including a rapid undo during exit. Native external share destinations remain untested. |

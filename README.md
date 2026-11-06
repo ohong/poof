@@ -6,7 +6,7 @@ Poof turns phone photos into a private visual collection. See your belongings to
 
 The first step to owning less is seeing what you own.
 
-The first release is free to use and works in desktop and mobile browsers:
+The account-based app is implemented and locally verified. Its hosted release will be free and support desktop and mobile browsers:
 
 - Add up to ten JPEG, PNG, WebP, or HEIC photos at once.
 - Get a clean catalog image, a short description, and an editable sale draft.
@@ -18,7 +18,7 @@ Listings are drafts. Poof does not post to marketplaces or complete sales. Compa
 
 ## Current deployment
 
-The public release is an interactive preview. Sample changes stay in the tab. Private accounts and uploads are deferred. A build without Supabase configuration selects this preview automatically. Resend is the selected email provider for the later account release.
+The [public preview is live](https://poof-phi.vercel.app). Sample changes stay in the tab. Private accounts and uploads are deferred. A build without Supabase configuration selects this preview automatically. Resend is the selected email provider for the later account release.
 
 ## Run locally
 
