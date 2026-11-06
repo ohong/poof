@@ -4,6 +4,7 @@ import { configured } from "@/lib/config";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { ArrowUpRight } from "lucide-react";
 export default async function SignIn() {
   if (configured()) {
     const db = await createClient();
@@ -16,9 +17,11 @@ export default async function SignIn() {
     <div className="auth-page">
       <header className="site-header">
         <Brand />
-        <Link href="/demo">Explore a sample collection ↗</Link>
+        <Link className="text-button" href="/demo">
+          Explore a sample collection <ArrowUpRight size={16} />
+        </Link>
       </header>
-      <main className="auth-layout">
+      <main className="auth-layout" id="main-content" tabIndex={-1}>
         <div className="auth-visual">
           <div className="sample-sheet" />
           <p>
@@ -30,10 +33,11 @@ export default async function SignIn() {
           <AuthForm />
         ) : (
           <div className="auth-form">
-            <h1>We’ll be back shortly.</h1>
+            <h1>Take a look around.</h1>
             <p>
-              Your collection is temporarily unavailable. Please try again
-              later.
+              Poof is open as an interactive preview. Private accounts and photo
+              uploads are not enabled yet. Explore the sample collection to try
+              editing, sale drafts, and reversible decisions.
             </p>
             <Link href="/demo" className="button">
               Explore the sample collection

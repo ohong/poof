@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -10,6 +10,15 @@ export function AuthForm() {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const emailInput = useRef<HTMLInputElement>(null);
+  const codeInput = useRef<HTMLInputElement>(null);
+  const previousStep = useRef(false);
+  useEffect(() => {
+    if (!busy && (sent || previousStep.current || error)) {
+      (sent ? codeInput : emailInput).current?.focus();
+    }
+    previousStep.current = sent;
+  }, [sent, busy, error]);
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -39,8 +48,9 @@ export function AuthForm() {
   }
   return (
     <form onSubmit={submit} className="auth-form">
-      <div className="eyebrow">YOUR PRIVATE COLLECTION</div>
-      <h1>{sent ? "Check your inbox." : "Make room for\na little lighter."}</h1>
+      <h1>
+        {sent ? "Check your inbox." : "A little less.\nA little lighter."}
+      </h1>
       <p>
         {sent
           ? `We sent a sign-in code to ${email}. Enter it below.`
@@ -50,7 +60,10 @@ export function AuthForm() {
         <label>
           Sign-in code
           <input
-            autoFocus
+            ref={codeInput}
+            disabled={busy}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? "auth-error" : undefined}
             inputMode="numeric"
             autoComplete="one-time-code"
             pattern="[0-9]{6}"
@@ -67,6 +80,9 @@ export function AuthForm() {
         <label>
           Email address
           <input
+            ref={emailInput}
+            disabled={busy}
+            aria-describedby={error ? "auth-error" : undefined}
             type="email"
             autoComplete="email"
             required
@@ -77,7 +93,7 @@ export function AuthForm() {
         </label>
       )}
       {error && (
-        <p className="error" role="alert">
+        <p className="error" role="alert" id="auth-error">
           {error}
         </p>
       )}

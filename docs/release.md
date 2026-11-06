@@ -2,7 +2,7 @@
 
 ## Current release state
 
-The rebuilt product is local. It has not been deployed. The connected accounts list Supabase organization **Side Projects** and Vercel team **Pacific Systems** (`ohong-projects`). These are discovered options, not approved resource targets. Organization confirmation, cost confirmation, SMTP delivery, and staged verification remain open.
+The November 6 release is a polished product preview; hosted accounts are deferred by the creator. See `docs/pls-fix.md` for the deployed URL and verification status. The connected accounts list Supabase organization **Side Projects** and Vercel team **Pacific Systems** (`ohong-projects`). Pacific Systems is the approved preview hosting target. Hosted Supabase organization/cost confirmation, Resend sender configuration, SMTP delivery, and private-account staging remain open for the later backend release.
 
 Do not reuse unrelated projects. Do not reset a hosted database to install this app. The original configured Supabase address did not resolve during discovery; the creator confirmed there is no existing Poof data to migrate.
 
@@ -13,14 +13,14 @@ Do not reuse unrelated projects. Do not reset a hosted database to install this 
 3. Create a dedicated project in an appropriate US West region, or use a verified owner-provided Poof project.
 4. Apply the checked-in migrations with the confirmed project reference. Use `supabase link --project-ref <confirmed-ref>`, inspect the target, then `supabase db push`. Never use `db reset` on a hosted target.
 5. Verify that `object-images` is private and its maximum upload size is 2 MB.
-6. Configure a verified SMTP sender and domain. Supabase's default email service is not a public-launch delivery plan.
+6. Configure Resend with a verified sender domain. In Supabase Auth SMTP settings use `smtp.resend.com`, port `465`, username `resend`, and a server-side Resend API key as the password. Set the sender name to Poof and use an address on the verified domain. Do not put the key in browser environment variables. See [Resend’s Supabase guide](https://resend.com/docs/send-with-supabase-smtp).
 7. Install `supabase/templates/magic-link.html` for both confirmation and magic-link email templates. Use six-digit codes and a one-hour expiry, or update the UI/template together.
 8. Set the Auth site URL to the confirmed app origin. Add the staging origin when needed.
 9. Store the browser-visible URL/publishable key and server-only secrets in Vercel environment settings. Use separate staging and production database resources where available.
 10. Rebuild with the cloud environment. Never deploy a prebuilt artifact containing local Supabase URLs.
 11. Stage the app in the confirmed Vercel team and test that exact deployment before promotion.
 
-`vercel.json` selects `sfo1` and one daily maintenance invocation at 09:23 UTC. Confirm the database region and hosting plan before using it. Set a strong `CRON_SECRET`; Vercel supplies its bearer header for scheduled requests. The route does nothing without correct authentication.
+`vercel.json` selects `sfo1`. The preview has no maintenance schedule. When hosted accounts are enabled, add a daily Vercel cron entry for `/api/maintenance` at `23 9 * * *`. Confirm the database region and hosting plan before using it. Set a strong `CRON_SECRET`; Vercel supplies its bearer header for scheduled requests. The route does nothing without correct authentication.
 
 ## Staged acceptance
 
@@ -61,6 +61,6 @@ Retain a tested Vercel deployment for rollback. Roll back code to that deploymen
 
 `package-lock.json` is authoritative. The npm lock replaces the inconsistent original dual-lock setup. Security overrides pin devalue 5.9.4 and nanoid 5.1.16, preserving their existing major versions while addressing published advisories. Recheck these pins when upgrading Workflow.
 
-The production dependency audit reports zero findings. The full audit reports five high-severity entries from one unpatched [braces advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm), propagated through Next's development lint dependencies. The audited braces version is 3.0.3, and no patched release is published. The app does not pass user input into these lint globs. Do not apply npm's suggested Next lint downgrade; recheck the upstream patch before changing this development dependency chain.
+November 6 dependency checks found new advisories after the original rebuild. Next.js is now pinned to 16.4.5, Workflow to 5.4.0, and transitive Zod/Undici versions are pinned within their existing major versions. The resulting production audit has no high or critical findings. Twenty moderate entries propagate from one [minimatch advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249) in bundled tool dependencies. App search does not use glob patterns. No automatic major-version override or framework downgrade was applied to suppress that finding. Recheck the upstream dependency updates before enabling hosted processing.
 
 Generated illustrative assets and prompts are documented in `docs/asset-prompts.md`. The public sample collection is labeled and separate from stored inventories. Preserve dependency licenses and notices when redistributing the app. No creator or user credentials belong in source, logs, screenshots, or release artifacts.

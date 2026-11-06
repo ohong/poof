@@ -203,7 +203,6 @@ export function Upload() {
   return (
     <div className="upload-page">
       <section className="upload-heading">
-        <div className="eyebrow">ONE SMALL START</div>
         <h1>Meet your things.</h1>
         <p>
           A quick photo becomes a little clarity. Add one object per photo;

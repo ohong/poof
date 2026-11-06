@@ -16,6 +16,10 @@ The first release is free to use and works in desktop and mobile browsers:
 
 Listings are drafts. Poof does not post to marketplaces or complete sales. Compare catalog images with originals and review descriptions before posting. Price estimates do not use live sold-listing data.
 
+## Current deployment
+
+The public release is an interactive preview. Sample changes stay in the tab. Private accounts and uploads are deferred. A build without Supabase configuration selects this preview automatically. Resend is the selected email provider for the later account release.
+
 ## Run locally
 
 Prerequisites: Node.js 22–26, npm, Docker, and Supabase CLI 2.118 or later. Local Supabase uses a dedicated `poof-rebuild` stack on ports 56321–56329. Other projects are not stopped or reset.
@@ -61,7 +65,7 @@ phone photo → browser preparation → private Storage → saved object
                                             reversible Archive
 ```
 
-Next.js 16.4 handles the app and API. Supabase provides email-code accounts, Postgres, and private Storage. Vercel Workflow persists processing across interruptions. FLUX.2 Klein 9B edits images; Claude Haiku 5.5 describes the original and suggests a price range. The app builds the sale draft from those observations. Runtime calls use ordinary workflows, not autonomous agents.
+Next.js 16.4.5 handles the app and API. Supabase provides email-code accounts, Postgres, and private Storage. Vercel Workflow persists processing across interruptions. FLUX.2 Klein 9B edits images; Claude Haiku 5.5 describes the original and suggests a price range. The app builds the sale draft from those observations. Runtime calls use ordinary workflows, not autonomous agents.
 
 Native Supabase accounts avoid a separate Clerk identity system. Hosted email delivery needs SMTP setup. See [release and operations](docs/release.md), [product specification](docs/specs.md), and [rebuild handoff](docs/pls-fix.md).
 

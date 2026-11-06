@@ -44,7 +44,6 @@ export function Settings({ email }: { email: string }) {
   }
   return (
     <div className="settings-page">
-      <div className="eyebrow">YOUR COLLECTION, YOUR CHOICE</div>
       <h1>Your account.</h1>
       <div className="settings-row">
         <div>

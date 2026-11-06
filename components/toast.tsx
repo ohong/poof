@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 export function Toast({
   message,
   onUndo,
@@ -8,11 +9,11 @@ export function Toast({
   onClose: () => void;
 }) {
   return (
-    <div className="toast" role="status">
-      <span>{message}</span>
+    <div className="toast">
+      <span role="status">{message}</span>
       {onUndo && <button onClick={onUndo}>Undo</button>}
       <button aria-label="Dismiss notification" onClick={onClose}>
-        ×
+        <X size={18} aria-hidden="true" />
       </button>
     </div>
   );

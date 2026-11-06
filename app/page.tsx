@@ -4,23 +4,26 @@ import { Brand } from "@/components/brand";
 import { PhotoComparison } from "@/components/photo-comparison";
 import { sampleItems } from "@/lib/sample";
 import { ItemImage } from "@/components/item-image";
+import { previewMode, startHref } from "@/lib/experience";
 export default function Page() {
   return (
     <div className="landing">
       <header className="site-header">
-        <Brand />
+        <div className="brand-group">
+          <Brand />
+          {previewMode && <span className="preview-label">Preview</span>}
+        </div>
         <nav>
           <Link href="/demo">Explore a collection</Link>
-          <Link className="button outline compact" href="/sign-in">
-            Sign in
+          <Link className="button outline compact" href={startHref}>
+            {previewMode ? "Try Poof" : "Sign in"}
             <ArrowUpRight size={15} />
           </Link>
         </nav>
       </header>
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className="landing-hero">
           <div className="hero-copy">
-            <div className="eyebrow">LESS STUFF. MORE SPACE.</div>
             <h1>
               See everything
               <br />
@@ -33,16 +36,24 @@ export default function Page() {
               belongings. Keep what matters. Give the rest a next chapter.
             </p>
             <div className="hero-actions">
-              <Link href="/sign-in" className="button primary">
-                Start your collection
+              <Link href={startHref} className="button primary">
+                {previewMode
+                  ? "Explore the collection"
+                  : "Start your collection"}
                 <ArrowRight size={18} />
               </Link>
-              <span>Free. Private. A little lighter.</span>
+              <span>
+                {previewMode
+                  ? "An interactive preview. No account needed."
+                  : "Free to use. Your collection stays private."}
+              </span>
             </div>
-            <Link className="hero-demo" href="/demo">
-              Take a look around first
-              <ArrowUpRight size={15} />
-            </Link>
+            {!previewMode && (
+              <Link className="hero-demo" href="/demo">
+                Take a look around first
+                <ArrowUpRight size={15} />
+              </Link>
+            )}
           </div>
           <Link
             href="/demo"
@@ -50,23 +61,26 @@ export default function Page() {
             aria-label="Explore the sample collection"
           >
             <div className="hero-gallery">
-              {sampleItems.map((item) => (
+              {sampleItems.map((item, index) => (
                 <div key={item.id}>
-                  <ItemImage item={item} />
+                  <ItemImage
+                    item={item}
+                    eager={index < 3}
+                    sizes="(max-width: 640px) 30vw, 16vw"
+                  />
                 </div>
               ))}
             </div>
             <div className="hero-collection-caption">
-              <span>THE EVERYDAY COLLECTION</span>
+              <span>A sample collection</span>
               <span>
-                009 OBJECTS <ArrowUpRight size={15} />
+                9 objects <ArrowUpRight size={16} />
               </span>
             </div>
           </Link>
         </section>
         <section className="landing-process">
           <div>
-            <span>01 / SEE IT</span>
             <h2>A photo. A fresh perspective.</h2>
             <p>
               Snap one object at a time. We clean up the background and give
@@ -74,7 +88,6 @@ export default function Page() {
             </p>
           </div>
           <div>
-            <span>02 / CHOOSE IT</span>
             <h2>Keep the things that matter.</h2>
             <p>
               See your belongings together. Keep, sell, donate, or toss. Change
@@ -82,7 +95,6 @@ export default function Page() {
             </p>
           </div>
           <div>
-            <span>03 / RELEASE IT</span>
             <h2>A little help with the next step.</h2>
             <p>
               Get an editable sale draft and a suggested price range. Copy,
@@ -93,7 +105,6 @@ export default function Page() {
         <section className="landing-transformation">
           <PhotoComparison />
           <div>
-            <div className="eyebrow">A NEW BACKGROUND. THE SAME BELONGING.</div>
             <h2>
               Even the little
               <br />
@@ -109,20 +120,23 @@ export default function Page() {
               Poof keeps your original photo alongside the catalog image. Check
               both, edit the details, and make the decision yourself.
             </p>
-            <Link className="text-button" href="/sign-in">
-              Start with one object
+            <Link className="text-button" href={startHref}>
+              {previewMode ? "Take a closer look" : "Start with one object"}
               <ArrowRight size={17} />
             </Link>
           </div>
         </section>
         <section className="landing-close">
-          <span className="eyebrow">YOU DON’T HAVE TO DO IT ALL TODAY.</span>
           <h2>One thing is a start.</h2>
-          <Link href="/sign-in" className="button primary">
-            Make a little space
+          <Link href={startHref} className="button primary">
+            {previewMode ? "Try the preview" : "Make a little space"}
             <ArrowRight size={18} />
           </Link>
-          <p>Free to use. No marketplace accounts needed.</p>
+          <p>
+            {previewMode
+              ? "Browse, edit a sale draft, and try a decision. Changes stay in your tab."
+              : "Free to use. No marketplace accounts needed."}
+          </p>
         </section>
       </main>
       <footer className="site-footer">

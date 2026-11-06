@@ -10,6 +10,16 @@ const status = JSON.parse(
 const previous = existsSync(".env.local")
   ? readFileSync(".env.local", "utf8")
   : "";
+if (
+  !status.API_URL ||
+  !/^https?:\/\//.test(status.API_URL) ||
+  !(status.PUBLISHABLE_KEY || status.ANON_KEY) ||
+  !(status.SECRET_KEY || status.SERVICE_ROLE_KEY)
+) {
+  throw new Error(
+    "The local Supabase API is not running. Start the full local stack, then run dev:setup again. Existing configuration was not changed.",
+  );
+}
 const site =
   previous
     .split("\n")

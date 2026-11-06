@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plus, Grid2X2, Archive, UserRound } from "lucide-react";
+import { Plus, Grid2X2, Archive, UserRound, ArrowUpRight } from "lucide-react";
 import { Brand } from "./brand";
+import { previewMode } from "@/lib/experience";
 export function Shell({
   children,
   email,
@@ -17,35 +18,40 @@ export function Shell({
     <div className="app-shell">
       {demo && (
         <div className="demo-banner">
-          Sample collection. Changes stay in this tab.
-          <Link href="/sign-in">
-            Start your own <span aria-hidden="true">↗</span>
-          </Link>
+          <span>
+            {previewMode ? "Product preview" : "Sample collection"}{" "}
+            <span aria-hidden="true">·</span> Changes stay in this tab.
+          </span>
         </div>
       )}
       <header className="app-header">
         <Brand />
-        <nav aria-label="Main navigation">
-          <Link
-            href={demo ? "/demo" : "/gallery"}
-            className={path === "/gallery" || demo ? "current" : ""}
-          >
-            Collection
-          </Link>
-          {!demo && (
+        {!demo && (
+          <nav aria-label="Main navigation">
+            <Link
+              href="/gallery"
+              className={path === "/gallery" ? "current" : ""}
+              aria-current={path === "/gallery" ? "page" : undefined}
+            >
+              Collection
+            </Link>
             <Link
               href="/archive"
               className={path === "/archive" ? "current" : ""}
+              aria-current={path === "/archive" ? "page" : undefined}
             >
               Archive
             </Link>
-          )}
-        </nav>
+          </nav>
+        )}
         <div className="header-actions">
           {demo ? (
-            <Link href="/sign-in" className="button primary compact">
-              Make it yours
-              <Plus size={16} />
+            <Link
+              href={previewMode ? "/" : "/sign-in"}
+              className="button outline compact"
+            >
+              {previewMode ? "About Poof" : "Make it yours"}
+              <ArrowUpRight size={16} />
             </Link>
           ) : (
             <>
@@ -65,7 +71,9 @@ export function Shell({
           )}
         </div>
       </header>
-      <main className="app-main">{children}</main>
+      <main className="app-main" id="main-content" tabIndex={-1}>
+        {children}
+      </main>
       <footer className="app-footer">
         <span>Less stuff. More space.</span>
         <Link href="/privacy">Privacy & data</Link>
@@ -75,17 +83,23 @@ export function Shell({
           <Link
             href="/gallery"
             className={path === "/gallery" ? "current" : ""}
+            aria-current={path === "/gallery" ? "page" : undefined}
           >
             <Grid2X2 size={20} />
             Collection
           </Link>
-          <Link href="/upload" className={path === "/upload" ? "current" : ""}>
+          <Link
+            href="/upload"
+            className={path === "/upload" ? "current" : ""}
+            aria-current={path === "/upload" ? "page" : undefined}
+          >
             <Plus size={24} />
             Add photos
           </Link>
           <Link
             href="/archive"
             className={path === "/archive" ? "current" : ""}
+            aria-current={path === "/archive" ? "page" : undefined}
           >
             <Archive size={20} />
             Archive

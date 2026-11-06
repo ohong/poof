@@ -1,15 +1,27 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
+import { previewMode } from "@/lib/experience";
+import { ArrowUpRight } from "lucide-react";
 export default function Privacy() {
   return (
     <div className="policy-page">
       <header className="site-header">
         <Brand />
-        <Link href="/gallery">Your collection ↗</Link>
+        <Link className="text-button" href={previewMode ? "/demo" : "/gallery"}>
+          {previewMode ? "Explore the preview" : "Your collection"}{" "}
+          <ArrowUpRight size={16} />
+        </Link>
       </header>
-      <main>
-        <div className="eyebrow">HOW YOUR COLLECTION WORKS</div>
+      <main id="main-content" tabIndex={-1}>
         <h1>Privacy & data.</h1>
+        {previewMode && (
+          <p className="notice">
+            This release is a product preview. It does not accept account
+            sign-ups or photo uploads. Sample edits stay in your tab and reset
+            when you reload. The sections below describe how private collections
+            work when account services are enabled.
+          </p>
+        )}
         <p>
           Your collection belongs to your account. Object records and photos use
           account-based access rules. The sample collection is separate and does
@@ -59,7 +71,7 @@ export default function Privacy() {
           <a href="https://bfl.ai/privacy-policy">Black Forest Labs</a>{" "}
           processes images.
         </p>
-        <p className="field-help">Last updated October 13, 2026.</p>
+        <p className="field-help">Last updated November 6, 2026.</p>
       </main>
       <footer className="site-footer">
         <Link href="/">Back to Poof</Link>

@@ -22,6 +22,7 @@ import {
 import { ItemImage } from "./item-image";
 import { ItemDetail } from "./item-detail";
 import { Toast } from "./toast";
+import { previewMode } from "@/lib/experience";
 type Summary = Pick<InventoryItem, "id" | "disposition" | "processing_state">;
 type Response = { items: GridItem[]; total: number; summary: Summary[] };
 const archived = (item: { disposition: Disposition }) =>
@@ -129,7 +130,9 @@ export function Collection({
             .toLowerCase()
             .includes(search.toLowerCase()),
       )
-    : items;
+    : items.filter(
+        (item) => archived(item) === showArchive || poof === item.id,
+      );
   const collected = summary.filter((item) => !archived(item)).length;
   const released = summary.length - collected;
   const kept = summary.filter((item) => item.disposition === "keep").length;
@@ -139,12 +142,24 @@ export function Collection({
   }
   async function update(id: string, changes: Partial<InventoryItem>) {
     let updated: DisplayItem;
-    if (demo)
+    if (demo) {
+      const previous = items.find((item) => item.id === id) as DisplayItem;
+      const currencyChanged =
+        changes.currency && changes.currency !== previous.currency;
       updated = {
-        ...items.find((item) => item.id === id)!,
+        ...previous,
         ...changes,
+        ...(currencyChanged
+          ? {
+              price_low: null,
+              price_high: null,
+              asking_price: changes.asking_price ?? null,
+              price_basis:
+                "Currency changed. Enter an asking price in the selected currency.",
+            }
+          : {}),
       } as DisplayItem;
-    else
+    } else
       updated = (
         await api<{ item: InventoryItem }>(`/api/items/${id}`, {
           method: "PATCH",
@@ -152,7 +167,13 @@ export function Collection({
         })
       ).item;
     setItems((previous) =>
-      previous.map((item) => (item.id === id ? updated : item)),
+      previous.some((item) => item.id === id)
+        ? previous.map((item) => (item.id === id ? updated : item))
+        : archived(updated) === showArchive
+          ? [updated, ...previous].sort((a, b) =>
+              b.created_at.localeCompare(a.created_at),
+            )
+          : previous,
     );
     const before = summary.find((item) => item.id === id);
     if (!demo && before && archived(before) !== archived(updated))
@@ -196,43 +217,59 @@ export function Collection({
       setOpening(null);
     }
   }
-  async function action(value: Disposition) {
+  async function action(
+    value: Disposition,
+    animate = false,
+    edits: Partial<InventoryItem> = {},
+  ) {
     if (!selected) return;
     const before = selected;
-    await update(before.id, { disposition: value });
+    await update(before.id, { ...edits, disposition: value });
     const removes = archived({ disposition: value }) !== showArchive;
     if (removes) opener.current = null;
     close();
-    if (removes) {
+    if (transition.current) clearTimeout(transition.current);
+    const shouldAnimate =
+      animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (removes && shouldAnimate) {
       setPoof(before.id);
-      transition.current = setTimeout(
-        () => {
-          setPoof(null);
-          if (!demo)
-            setItems((previous) =>
-              previous.filter((item) => item.id !== before.id),
-            );
-          setRefresh((value) => value + 1);
-        },
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 600,
-      );
-    } else setRefresh((value) => value + 1);
+      transition.current = setTimeout(() => {
+        setPoof(null);
+        if (!demo)
+          setItems((previous) =>
+            previous.filter(
+              (item) => item.id !== before.id || archived(item) === showArchive,
+            ),
+          );
+        setRefresh((value) => value + 1);
+      }, 180);
+    } else {
+      setPoof(null);
+      if (removes && !demo)
+        setItems((previous) =>
+          previous.filter((item) => item.id !== before.id),
+        );
+      setRefresh((value) => value + 1);
+    }
     setToast({
       message:
         value === "active"
           ? "Returned to your collection."
           : value === "keep"
-            ? "A keeper. Nice choice."
-            : `Marked to ${value}. A little lighter.`,
+            ? "Marked to keep."
+            : `Marked to ${value} and moved to Archive.`,
       undo: { id: before.id, disposition: before.disposition },
     });
   }
   async function undo() {
     if (!toast?.undo) return;
+    if (transition.current) clearTimeout(transition.current);
+    setPoof(null);
     try {
       await update(toast.undo.id, { disposition: toast.undo.disposition });
       setRefresh((value) => value + 1);
       setToast({ message: "Decision undone." });
+      searchInput.current?.focus();
     } catch (error) {
       setToast({
         message:
@@ -246,45 +283,30 @@ export function Collection({
     <>
       <section className="collection-heading">
         <div>
-          <div className="eyebrow">
-            {demo
-              ? "A GLIMPSE OF SOMETHING LIGHTER"
-              : showArchive
-                ? "THE THINGS YOU’RE READY TO RELEASE"
-                : "A LITTLE LESS, A LITTLE LIGHTER"}
-          </div>
-          <h1>
-            {showArchive
-              ? "Room for what’s next."
-              : "Your everyday,\ncollected."}
-          </h1>
-          <p>
-            {showArchive
-              ? "A record of your decisions. Bring anything back, anytime."
-              : "See what you have. Keep what matters. Let the rest find its next chapter."}
-          </p>
+          <h1>{showArchive ? "Archive." : "Your collection."}</h1>
+          {showArchive && (
+            <p>A record of your decisions. Bring anything back, anytime.</p>
+          )}
         </div>
-        <div className="collection-stats">
-          <div>
-            <strong>{collected.toString().padStart(2, "0")}</strong>
-            <span>in your collection</span>
-          </div>
-          <div>
-            <strong>{showArchive ? released : kept}</strong>
-            <span>{showArchive ? "ready to release" : "chosen to keep"}</span>
-          </div>
-        </div>
+        <p className="collection-summary">
+          <span>{collected} in your collection</span>
+          <span>
+            {showArchive ? `${released} in Archive` : `${kept} chosen to keep`}
+          </span>
+        </p>
       </section>
       {demo && (
         <div className="demo-tabs">
           <button
             className={!showArchive ? "current" : ""}
+            aria-pressed={!showArchive}
             onClick={() => setDemoArchive(false)}
           >
             Collection ({collected})
           </button>
           <button
             className={showArchive ? "current" : ""}
+            aria-pressed={showArchive}
             onClick={() => setDemoArchive(true)}
           >
             Archive ({released})
@@ -297,7 +319,7 @@ export function Collection({
           <input
             aria-label="Search objects"
             ref={searchInput}
-            placeholder="Find something in your collection…"
+            placeholder="Search objects…"
             value={search}
             onChange={(event) => changeFilter(setSearch, event.target.value)}
           />
@@ -365,11 +387,11 @@ export function Collection({
             ? "OPENING YOUR COLLECTION"
             : `${demo ? visible.length : total} ${demo ? (visible.length === 1 ? "OBJECT" : "OBJECTS") : total === 1 ? "OBJECT" : "OBJECTS"}${search ? " FOUND" : ""}`}
         </span>
-        <span>
-          {showArchive
-            ? "A RECORD OF YOUR NEXT CHAPTERS"
-            : "ONE PHOTO. ONE OBJECT. ONE SMALL START."}
-        </span>
+        {demo && (
+          <span>
+            Try an object. Edit its details or decide what comes next.
+          </span>
+        )}
       </div>
       {error && (
         <div className="error-panel" role="alert">
@@ -392,12 +414,9 @@ export function Collection({
         </div>
       ) : !error && visible.length === 0 ? (
         <section className="empty-state">
-          <span className="empty-symbol" aria-hidden="true">
-            ✳
-          </span>
           <h2>
             {search || category || disposition
-              ? "Nothing here just yet."
+              ? "No objects found."
               : showArchive
                 ? "Every decision starts\nwith a little space."
                 : "Start with what’s\nin front of you."}
@@ -417,9 +436,18 @@ export function Collection({
                 setCategory("");
                 setDisposition("");
                 setOffset(0);
+                searchInput.current?.focus();
               }}
             >
               Clear filters
+            </button>
+          ) : demo && showArchive ? (
+            <button
+              className="button primary"
+              onClick={() => setDemoArchive(false)}
+            >
+              Back to collection
+              <ArrowRight size={18} />
             </button>
           ) : (
             <Link
@@ -433,7 +461,7 @@ export function Collection({
         </section>
       ) : (
         <div className={`object-grid ${dense ? "dense" : ""}`}>
-          {visible.map((item, index) => (
+          {visible.map((item) => (
             <button
               className={`object-tile ${poof === item.id ? "poofing" : ""}`}
               key={item.id}
@@ -447,24 +475,6 @@ export function Collection({
             >
               <div className="object-image">
                 <ItemImage item={item} />
-                {poof === item.id && (
-                  <div className="poof-cloud" aria-hidden="true">
-                    {Array.from({ length: 12 }, (_, index) => (
-                      <i
-                        key={index}
-                        style={
-                          {
-                            "--x": `${Math.cos((index * Math.PI) / 6) * 110}px`,
-                            "--y": `${Math.sin((index * Math.PI) / 6) * 110}px`,
-                          } as React.CSSProperties
-                        }
-                      />
-                    ))}
-                  </div>
-                )}
-                <span className="object-number">
-                  {String(index + 1).padStart(3, "0")}
-                </span>
                 <span className="object-open" aria-hidden="true">
                   <ArrowUpRight size={19} />
                 </span>
@@ -494,16 +504,20 @@ export function Collection({
               </div>
             </button>
           ))}
-          {!showArchive && !search && !category && !disposition && (
-            <Link
-              href={demo ? "/sign-in" : "/upload"}
-              className="add-object-tile"
-            >
-              <Plus size={27} />
-              <span>{demo ? "Start your own" : "One more object"}</span>
-              <small>A small step toward less.</small>
-            </Link>
-          )}
+          {!showArchive &&
+            !search &&
+            !category &&
+            !disposition &&
+            !(demo && previewMode) && (
+              <Link
+                href={demo ? "/sign-in" : "/upload"}
+                className="add-object-tile"
+              >
+                <Plus size={27} />
+                <span>{demo ? "Start your own" : "One more object"}</span>
+                <small>A small step toward less.</small>
+              </Link>
+            )}
         </div>
       )}
       {!demo && items.length < total && !loading && (
